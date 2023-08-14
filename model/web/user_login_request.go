@@ -1,6 +1,6 @@
 package web
 
-type UserLogin struct {
+type UserLoginRequest struct {
 	Username string
 	Password string
 }

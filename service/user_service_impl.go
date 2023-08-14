@@ -3,12 +3,15 @@ package service
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"go-blog-api/helper"
 	"go-blog-api/model/domain"
 	"go-blog-api/model/web"
 	"go-blog-api/repository"
+	"time"
 
 	"github.com/go-playground/validator/v10"
+	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -19,7 +22,10 @@ type UserServiceImpl struct {
 }
 
 // FindForAuth implements UserService.
-func (service *UserServiceImpl) FindForAuth(ctx context.Context, request web.UserLogin) web.UserLogin {
+func (service *UserServiceImpl) FindForAuth(ctx context.Context, request web.UserLoginRequest) web.UserLoginResponse {
+
+	hmacSampleSecret := []byte("RAHASIA")
+
 	err := service.Validate.Struct(request)
 	helper.PanicIfError(err)
 
@@ -32,12 +38,30 @@ func (service *UserServiceImpl) FindForAuth(ctx context.Context, request web.Use
 		Password: request.Password,
 	}
 
-	user = service.UserRepository.FindForAuth(ctx, tx, user)
+	result := service.UserRepository.FindForAuth(ctx, tx, user)
 
-	return web.UserLogin{
-		Username: user.Username,
-		Password: user.Password,
-	}	
+	dataUser := web.UserLoginRequest{
+		Username: result.Username,
+		Password: result.Password,
+	}
+	
+	err = bcrypt.CompareHashAndPassword([]byte(dataUser.Password), []byte(user.Password))
+	fmt.Println(dataUser.Password)
+	fmt.Println(user.Password)
+	helper.PanicIfError(err)
+	
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"username" : dataUser.Username,
+		"nbf": time.Now().Unix(),
+	})
+	tokenString, err := token.SignedString(hmacSampleSecret)
+	helper.PanicIfError(err)
+	
+	response := web.UserLoginResponse{
+		Token: tokenString,
+	}
+
+	return response
 }
 
 // Create implements UserService.

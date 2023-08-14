@@ -16,9 +16,23 @@ type AuthControllerImpl struct {
 
 // login implements AuthController.
 func (controller *AuthControllerImpl) Login(writter http.ResponseWriter, request *http.Request, params httprouter.Params) {
-	// userLoginRequest := web.UserLogin{}
+	userLoginRequest := web.UserLoginRequest{}
 
-	// decoder
+	decoder := json.NewDecoder(request.Body)
+	err := decoder.Decode(&userLoginRequest)
+	helper.PanicIfError(err)
+
+	token := controller.UserService.FindForAuth(request.Context(), userLoginRequest)
+	webResponse := web.WebResponse{
+		Code: 200,
+		Status: "OK",
+		Data: token,
+	}
+
+	writter.Header().Add("Content-Type", "application/json")
+	encoder := json.NewEncoder(writter)
+	err = encoder.Encode(webResponse)
+	helper.PanicIfError(err)
 }
 
 // register implements AuthController.

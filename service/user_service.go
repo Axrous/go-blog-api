@@ -10,5 +10,5 @@ type UserService interface {
 	// Update(ctx context.Context, )
 	FindById(ctx context.Context, userId int) web.UserResponse
 	FIndAll(ctx context.Context) []web.UserResponse
-	FindForAuth(ctx context.Context, request web.UserLogin) web.UserLogin
+	FindForAuth(ctx context.Context, request web.UserLoginRequest) web.UserLoginResponse
 }
