@@ -29,8 +29,8 @@ func (repository *UserRepositoryImpl) FindAll(ctx context.Context, tx *sql.Tx) [
 	rows, err := tx.QueryContext(ctx, SQL)
 	helper.PanicIfError(err)
 	defer rows.Close()
+	
 	var users []domain.User
-
 	for rows.Next() {
 		user := domain.User{}
 		err := rows.Scan(&user.Id, &user.Username, &user.Name)

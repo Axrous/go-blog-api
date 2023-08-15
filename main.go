@@ -4,6 +4,7 @@ import (
 	"go-blog-api/app"
 	"go-blog-api/controller"
 	"go-blog-api/helper"
+	"go-blog-api/middleware"
 	"go-blog-api/repository"
 	"go-blog-api/service"
 	"net/http"
@@ -16,15 +17,22 @@ func main() {
 
 	db := app.NewDB()
 	validate := validator.New()
-	userRepository := repository.NewUserRepository()
-	userService := service.NewUserService(userRepository, db, validate)
-	authController := controller.NewAuthController(userService)
 
-	router := app.NewRouter(authController)
+	//Repository
+	userRepository := repository.NewUserRepository()
+
+	//Service
+	userService := service.NewUserService(userRepository, db, validate)
+
+	//Controller
+	authController := controller.NewAuthController(userService)
+	userController := controller.NewUserController(userService)
+
+	router := app.NewRouter(authController, userController)
 
 	server := http.Server{
 		Addr: "localhost:3000",
-		Handler: router,
+		Handler: middleware.NewAuthMiddleware(router),
 	}
 
 	err := server.ListenAndServe()
