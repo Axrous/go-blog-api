@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"encoding/json"
 	"go-blog-api/helper"
 	"go-blog-api/model/web"
 	"go-blog-api/service"
@@ -24,10 +23,7 @@ func (controller *UserControllerImpl) FindAll(writer http.ResponseWriter, reques
 		Data: userResponses,
 	}
 
-	writer.Header().Add("Content-Type", "application/json")
-	encoder := json.NewEncoder(writer)
-	err := encoder.Encode(webResponse)
-	helper.PanicIfError(err)
+	helper.ResponToBody(writer, webResponse)
 }
 
 // FindById implements UserController.

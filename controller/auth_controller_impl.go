@@ -15,7 +15,7 @@ type AuthControllerImpl struct {
 }
 
 // login implements AuthController.
-func (controller *AuthControllerImpl) Login(writter http.ResponseWriter, request *http.Request, params httprouter.Params) {
+func (controller *AuthControllerImpl) Login(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
 	userLoginRequest := web.UserLoginRequest{}
 
 	decoder := json.NewDecoder(request.Body)
@@ -29,14 +29,14 @@ func (controller *AuthControllerImpl) Login(writter http.ResponseWriter, request
 		Data: token,
 	}
 
-	writter.Header().Add("Content-Type", "application/json")
-	encoder := json.NewEncoder(writter)
+	writer.Header().Add("Content-Type", "application/json")
+	encoder := json.NewEncoder(writer)
 	err = encoder.Encode(webResponse)
 	helper.PanicIfError(err)
 }
 
 // register implements AuthController.
-func (controller *AuthControllerImpl) Register(writter http.ResponseWriter, request *http.Request, params httprouter.Params) {
+func (controller *AuthControllerImpl) Register(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
 	userRegisterRequest := web.UserCreateRequest{}
 
 	decoder := json.NewDecoder(request.Body)
@@ -50,8 +50,8 @@ func (controller *AuthControllerImpl) Register(writter http.ResponseWriter, requ
 		Data: userResponse,
 	}
 
-	writter.Header().Add("Content-Type", "application/json")
-	encoder := json.NewEncoder(writter)
+	writer.Header().Add("Content-Type", "application/json")
+	encoder := json.NewEncoder(writer)
 	err = encoder.Encode(webResponse)
 	helper.PanicIfError(err)
 }

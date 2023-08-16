@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"encoding/json"
 	"fmt"
 	"go-blog-api/helper"
 	"go-blog-api/model/web"
@@ -43,12 +42,8 @@ func (middleware *AuthMiddleware) ServeHTTP(writer http.ResponseWriter, request 
 			Status: "UNAUTHORIZED",
 		}
 
-		writer.Header().Add("Content-Type", "application/json")
-		encoder := json.NewEncoder(writer)
-		err := encoder.Encode(webResponse)
-		helper.PanicIfError(err)
-
-		return
+		helper.ResponToBody(writer, webResponse)
+		return 
 	}
 
 
@@ -66,10 +61,7 @@ func (middleware *AuthMiddleware) ServeHTTP(writer http.ResponseWriter, request 
 			Status: "UNAUTHORIZED",
 		}
 
-		writer.Header().Add("Content-Type", "application/json")
-		encoder := json.NewEncoder(writer)
-		err = encoder.Encode(webResponse)
-		helper.PanicIfError(err)
+		helper.ResponToBody(writer, webResponse)
 		return
 	} 
 	fmt.Println("SUKSES")
