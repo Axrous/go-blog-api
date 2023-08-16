@@ -29,10 +29,7 @@ func (controller *AuthControllerImpl) Login(writer http.ResponseWriter, request 
 		Data: token,
 	}
 
-	writer.Header().Add("Content-Type", "application/json")
-	encoder := json.NewEncoder(writer)
-	err = encoder.Encode(webResponse)
-	helper.PanicIfError(err)
+	helper.ResponToBody(writer, webResponse)
 }
 
 // register implements AuthController.

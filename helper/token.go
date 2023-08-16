@@ -18,7 +18,7 @@ func GetUserInfo(tokenString string) int {
 	token, _ := GetToken(tokenString)
 
 	if claims, ok := token.Claims.(jwt.MapClaims); ok {
-		userId := int(claims["id"].(float64))
+		userId := int(claims["userId"].(float64))
 		return userId
 	}
 

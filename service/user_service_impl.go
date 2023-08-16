@@ -53,6 +53,7 @@ func (service *UserServiceImpl) FindForAuth(ctx context.Context, request web.Use
 	
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"username" : dataUser.Username,
+		"userId" : result.Id,
 		"nbf": time.Now().Unix(),
 	})
 	tokenString, err := token.SignedString(hmacSampleSecret)

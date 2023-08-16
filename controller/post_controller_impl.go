@@ -12,7 +12,7 @@ import (
 )
 
 type PostControllerImpl struct {
-	postService service.PostService
+	PostService service.PostService
 }
 
 // Create implements PostController.
@@ -27,7 +27,7 @@ func (controller *PostControllerImpl) Create(writer http.ResponseWriter, request
 	tokenString := request.Header.Get("Authorization")
 	userId := helper.GetUserInfo(tokenString)
 	postCreateRequest.AuthorId = userId
-	postResponse := controller.postService.Save(request.Context(), postCreateRequest)
+	postResponse := controller.PostService.Save(request.Context(), postCreateRequest)
 
 	webResponse := web.WebResponse{
 		Code: 200,
@@ -45,7 +45,7 @@ func (controller *PostControllerImpl) Delete(writer http.ResponseWriter, request
 	id, err := strconv.Atoi(postId)
 	helper.PanicIfError(err)
 
-	controller.postService.Delete(request.Context(), id)
+	controller.PostService.Delete(request.Context(), id)
 	webResponse := web.WebResponse{
 		Code: 200,
 		Status: "OK",
@@ -57,7 +57,7 @@ func (controller *PostControllerImpl) Delete(writer http.ResponseWriter, request
 // FindAll implements PostController.
 func (controller *PostControllerImpl) FindAll(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
 	
-	postResponses := controller.postService.FindAll(request.Context())
+	postResponses := controller.PostService.FindAll(request.Context())
 
 	webResponse := web.WebResponse{
 		Code: 200,
@@ -74,7 +74,7 @@ func (controller *PostControllerImpl) FindById(writer http.ResponseWriter, reque
 	id, err := strconv.Atoi(postId)
 	helper.PanicIfError(err)
 
-	postResponse := controller.postService.FindById(request.Context(), id)
+	postResponse := controller.PostService.FindById(request.Context(), id)
 
 	webResponse := web.WebResponse{
 		Code: 200,
@@ -94,7 +94,12 @@ func (controller *PostControllerImpl) Update(writer http.ResponseWriter, request
 	err := decoder.Decode(&postUpdateRequest)
 	helper.PanicIfError(err)
 
-	postResponse := controller.postService.Update(request.Context(), postUpdateRequest)
+	postId := params.ByName("postId")
+	id, err := strconv.Atoi(postId)
+	helper.PanicIfError(err)
+	postUpdateRequest.Id = id
+
+	postResponse := controller.PostService.Update(request.Context(), postUpdateRequest)
 	webResponse := web.WebResponse{
 		Code: 200,
 		Status: "OK",
@@ -105,6 +110,8 @@ func (controller *PostControllerImpl) Update(writer http.ResponseWriter, request
 }
 
 func NewPostController(postService service.PostService) PostController {
-	return &PostControllerImpl{}
+	return &PostControllerImpl{
+		PostService: postService,
+	}
 
 }

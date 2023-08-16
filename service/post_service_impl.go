@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"go-blog-api/exception"
 	"go-blog-api/helper"
 	"go-blog-api/model/domain"
@@ -74,12 +75,14 @@ func (service *PostServiceImpl) Save(ctx context.Context, request web.PostCreate
 
 	createdAt := time.Now().Unix()
 
+	fmt.Println(createdAt)
 	post := domain.Post{
 		Title: request.Title,
 		Content: request.Content,
 		AuthorId: request.AuthorId,
 		CreatedAt: int(createdAt),
 	}
+	
 
 	result := service.PostRepository.Save(ctx, tx, post)
 
@@ -100,25 +103,33 @@ func (service *PostServiceImpl) Update(ctx context.Context, request web.PostUpda
 	helper.PanicIfError(err)
 	defer helper.CommitOrRollback(tx)
 
-	newPost := domain.Post{
-		Title: request.Title,
-		Content: request.Content,
+	post, err := service.PostRepository.FindById(ctx, tx, request.Id)
+	if err != nil {
+		panic(exception.NewNotFoundError(err.Error()))
 	}
 
-	result := service.PostRepository.Update(ctx, tx, newPost)
+	post.Title = request.Title
+	post.Content = request.Content
+
+
+	post = service.PostRepository.Update(ctx, tx, post)
 
 	postResponse := web.PostResponse{
-		Id: result.Id,
-		Title: result.Title,
-		Content: result.Content,
-		AuthorId: result.AuthorId,
-		CreatedAt: result.CreatedAt,
+		Id: post.Id,
+		Title: post.Title,
+		Content: post.Content,
+		AuthorId: post.AuthorId,
+		CreatedAt: post.CreatedAt,
 	}
 
 	return postResponse
 
 }
 
-func NewPostService(repository repository.PostRepository, DB *sql.DB, Validate *validator.Validate) PostService {
-	return &PostServiceImpl{}
+func NewPostService(postRepository repository.PostRepository, DB *sql.DB, validate *validator.Validate) PostService {
+	return &PostServiceImpl{
+		PostRepository: postRepository,
+		DB: DB,
+		Validate: validate,
+	}
 }

@@ -20,15 +20,18 @@ func main() {
 
 	//Repository
 	userRepository := repository.NewUserRepository()
+	postRepository := repository.NewPostRepository()
 
 	//Service
 	userService := service.NewUserService(userRepository, db, validate)
+	postService := service.NewPostService(postRepository, db, validate)
 
 	//Controller
 	authController := controller.NewAuthController(userService)
 	userController := controller.NewUserController(userService)
+	postController := controller.NewPostController(postService)
 
-	router := app.NewRouter(authController, userController)
+	router := app.NewRouter(authController, userController, postController)
 
 	server := http.Server{
 		Addr: "localhost:3000",

@@ -12,7 +12,7 @@ type PostRepositoryImpl struct {
 }
 
 // Delete implements PostRepository.
-func (*PostRepositoryImpl) Delete(ctx context.Context, tx *sql.Tx, post domain.Post) {
+func (repository *PostRepositoryImpl) Delete(ctx context.Context, tx *sql.Tx, post domain.Post) {
 	SQL := "delete from posts where id = ?"
 
 	_, err := tx.ExecContext(ctx, SQL, post.Id)
@@ -20,7 +20,7 @@ func (*PostRepositoryImpl) Delete(ctx context.Context, tx *sql.Tx, post domain.P
 }
 
 // FindAll implements PostRepository.
-func (*PostRepositoryImpl) FindAll(ctx context.Context, tx *sql.Tx) []domain.Post {
+func (repository *PostRepositoryImpl) FindAll(ctx context.Context, tx *sql.Tx) []domain.Post {
 	SQL := "select id, title, content, created_at, author_id from posts"
 
 	rows, err := tx.QueryContext(ctx, SQL)
@@ -38,8 +38,8 @@ func (*PostRepositoryImpl) FindAll(ctx context.Context, tx *sql.Tx) []domain.Pos
 }
 
 // FindById implements PostRepository.
-func (*PostRepositoryImpl) FindById(ctx context.Context, tx *sql.Tx, postId int) (domain.Post, error) {
-	SQL := "select id, title, content, author_id, created_at from users where id = ?"
+func (repository *PostRepositoryImpl) FindById(ctx context.Context, tx *sql.Tx, postId int) (domain.Post, error) {
+	SQL := "select id, title, content, author_id, created_at from posts where id = ?"
 
 	rows, err := tx.QueryContext(ctx, SQL, postId)
 	helper.PanicIfError(err)
@@ -56,7 +56,7 @@ func (*PostRepositoryImpl) FindById(ctx context.Context, tx *sql.Tx, postId int)
 }
 
 // Save implements PostRepository.
-func (*PostRepositoryImpl) Save(ctx context.Context, tx *sql.Tx, post domain.Post) domain.Post {
+func (repository *PostRepositoryImpl) Save(ctx context.Context, tx *sql.Tx, post domain.Post) domain.Post {
 	SQL := "insert into posts(title, content, author_id, created_at) values(?, ?, ?, ?)"
 
 	result, err := tx.ExecContext(ctx, SQL, post.Title, post.Content, post.AuthorId, post.CreatedAt)
@@ -70,7 +70,7 @@ func (*PostRepositoryImpl) Save(ctx context.Context, tx *sql.Tx, post domain.Pos
 }
 
 // Update implements PostRepository.
-func (*PostRepositoryImpl) Update(ctx context.Context, tx *sql.Tx, post domain.Post) domain.Post {
+func (repository *PostRepositoryImpl) Update(ctx context.Context, tx *sql.Tx, post domain.Post) domain.Post {
 	SQL := "update posts set title = ?, content = ? where id = ?"
 
 	_, err := tx.ExecContext(ctx, SQL, post.Title, post.Content, post.Id)
@@ -79,6 +79,6 @@ func (*PostRepositoryImpl) Update(ctx context.Context, tx *sql.Tx, post domain.P
 	return post
 }
 
-func NewPostRepository(PostRepositoryImpl) PostRepository {
+func NewPostRepository() PostRepository {
 	return &PostRepositoryImpl{}
 }

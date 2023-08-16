@@ -13,12 +13,12 @@ type UserRepositoryImpl struct {
 
 // FindForAuth implements UserRepository.
 func (repository *UserRepositoryImpl) FindForAuth(ctx context.Context, tx *sql.Tx, user domain.User) domain.User {
-	SQL := "select username, password from users where username = ?"
+	SQL := "select id, username, password from users where username = ?"
 
 	rows := tx.QueryRowContext(ctx, SQL, user.Username)
 
 	user = domain.User{}
-	rows.Scan(&user.Username, &user.Password)
+	rows.Scan(&user.Id, &user.Username, &user.Password)
 	return user
 }
 
