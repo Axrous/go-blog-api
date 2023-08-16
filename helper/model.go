@@ -26,3 +26,19 @@ func ToUserResponses(users []domain.User) []web.UserResponse  {
 
 	return userResponses
 }
+
+func ToPostResponses(posts []domain.Post) []web.PostResponse  {
+	var postResponses []web.PostResponse
+
+	for _, post := range posts {
+		postResponses =append(postResponses, web.PostResponse{
+			Id: post.Id,
+			Title: post.Title,
+			Content: post.Content,
+			AuthorId: post.AuthorId,
+			CreatedAt: post.CreatedAt,
+		})
+	}
+
+	return postResponses
+}

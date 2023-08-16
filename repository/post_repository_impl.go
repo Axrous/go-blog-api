@@ -12,10 +12,10 @@ type PostRepositoryImpl struct {
 }
 
 // Delete implements PostRepository.
-func (*PostRepositoryImpl) Delete(ctx context.Context, tx *sql.Tx, postId int) {
+func (*PostRepositoryImpl) Delete(ctx context.Context, tx *sql.Tx, post domain.Post) {
 	SQL := "delete from posts where id = ?"
 
-	_, err := tx.ExecContext(ctx, SQL, postId)
+	_, err := tx.ExecContext(ctx, SQL, post.Id)
 	helper.PanicIfError(err)
 }
 

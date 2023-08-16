@@ -5,8 +5,6 @@ import (
 	"go-blog-api/helper"
 	"go-blog-api/model/web"
 	"net/http"
-
-	"github.com/golang-jwt/jwt/v5"
 )
 
 type AuthMiddleware struct {
@@ -29,7 +27,7 @@ func (middleware *AuthMiddleware) ServeHTTP(writer http.ResponseWriter, request 
 		return
 	}
 
-	hmacSampleSecret := []byte("RAHASIA")
+
 	tokenString := request.Header.Get("Authorization")
 
 	if tokenString == "" {
@@ -47,9 +45,7 @@ func (middleware *AuthMiddleware) ServeHTTP(writer http.ResponseWriter, request 
 	}
 
 
-	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		return hmacSampleSecret, nil
-	})
+	token, err := helper.GetToken(tokenString)
 
 	if err != nil || !token.Valid {
 		fmt.Println("GAGAL")

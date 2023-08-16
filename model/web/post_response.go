@@ -1,6 +1,6 @@
-package domain
+package web
 
-type Post struct {
+type PostResponse struct {
 	Id        int
 	Title     string
 	Content   string
