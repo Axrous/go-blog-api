@@ -5,6 +5,7 @@ import (
 	"go-blog-api/model/web"
 	"go-blog-api/service"
 	"net/http"
+	"strconv"
 
 	"github.com/julienschmidt/httprouter"
 )
@@ -28,7 +29,20 @@ func (controller *UserControllerImpl) FindAll(writer http.ResponseWriter, reques
 
 // FindById implements UserController.
 func (controller *UserControllerImpl) FindById(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
-	panic("unimplemented")
+	
+	userId := params.ByName("userId")
+	id, err := strconv.Atoi(userId)
+	helper.PanicIfError(err)
+
+	userResponse := controller.userService.FindById(request.Context(), id)
+
+	webResponse := web.WebResponse{
+		Code: 200,
+		Status: "OK",
+		Data: userResponse,
+	}
+
+	helper.ResponToBody(writer, webResponse)
 }
 
 func NewUserController(userService service.UserService) UserController {

@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"go-blog-api/exception"
 	"go-blog-api/helper"
 	"go-blog-api/model/domain"
 	"go-blog-api/model/web"
@@ -108,7 +109,7 @@ func (service *UserServiceImpl) FindById(ctx context.Context, userId int) web.Us
 
 	user, err := service.UserRepository.FindById(ctx, tx, userId)
 	if err != nil {
-		helper.PanicIfError(err)
+		panic(exception.NewNotFoundError(err.Error()))
 	}
 
 	return helper.ToUserResponse(user)

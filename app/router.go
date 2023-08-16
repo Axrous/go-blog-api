@@ -17,6 +17,7 @@ func NewRouter(authController controller.AuthController, userController controll
 
 	//User Controller
 	router.GET("/api/users", userController.FindAll)
+	router.GET("/api/users/:userId", userController.FindById)
 
 	router.PanicHandler = exception.ErrorHandler
 	

@@ -43,7 +43,7 @@ func (repository *UserRepositoryImpl) FindAll(ctx context.Context, tx *sql.Tx) [
 
 // FindById implements UserRepository.
 func (repository *UserRepositoryImpl) FindById(ctx context.Context, tx *sql.Tx, userId int) (domain.User, error) {
-	SQL := "select id, username, name from users wehere id = ?"
+	SQL := "select id, username, name from users where id = ?"
 
 	rows, err := tx.QueryContext(ctx, SQL, userId)
 	helper.PanicIfError(err)
