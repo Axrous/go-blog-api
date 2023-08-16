@@ -2,6 +2,7 @@ package app
 
 import (
 	"go-blog-api/controller"
+	"go-blog-api/exception"
 
 	"github.com/julienschmidt/httprouter"
 )
@@ -17,7 +18,7 @@ func NewRouter(authController controller.AuthController, userController controll
 	//User Controller
 	router.GET("/api/users", userController.FindAll)
 
-
+	router.PanicHandler = exception.ErrorHandler
 	
 	return router
 }
