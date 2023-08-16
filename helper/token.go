@@ -12,3 +12,15 @@ func GetToken(tokenString string) (*jwt.Token, error) {
 
 	return token, err
 }
+
+func GetUserInfo(tokenString string) int {
+	
+	token, _ := GetToken(tokenString)
+
+	if claims, ok := token.Claims.(jwt.MapClaims); ok {
+		userId := int(claims["id"].(float64))
+		return userId
+	}
+
+	return 0
+}
