@@ -62,7 +62,7 @@ func (repository *CommentRepositoryImpl) FindByPostId(ctx context.Context, tx *s
 
 // Save implements CommentRepository.
 func (repository *CommentRepositoryImpl) Save(ctx context.Context, tx *sql.Tx, comment domain.Comment) domain.Comment {
-	SQL := "insert into comments content, post_id, user_id values(?,?,?)"
+	SQL := "insert into comments (content, post_id, user_id) values(?,?,?)"
 
 	result, err := tx.ExecContext(ctx, SQL, comment.Content, comment.PostId, comment.UserId)
 	helper.PanicIfError(err)

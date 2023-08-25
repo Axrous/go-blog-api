@@ -1,7 +1,7 @@
 package web
 
 type CommentCreateRequest struct {
-	Content string
-	PostId  int
+	Content string `json:"content"`
+	PostId  int    `json:"postid"`
 	UserId  int
 }

@@ -33,7 +33,6 @@ func (controller *CommentControllerImpl) Create(writer http.ResponseWriter, requ
 		Status: "OK",
 		Data: commentResponse,
 	}
-
 	helper.ResponToBody(writer, webResonse)
 }
 

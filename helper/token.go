@@ -1,6 +1,8 @@
 package helper
 
-import "github.com/golang-jwt/jwt/v5"
+import (
+	"github.com/golang-jwt/jwt/v5"
+)
 
 func GetToken(tokenString string) (*jwt.Token, error) {
 

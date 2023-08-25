@@ -7,7 +7,11 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
-func NewRouter(authController controller.AuthController, userController controller.UserController, postController controller.PostController) *httprouter.Router{
+func NewRouter(
+	authController controller.AuthController, 
+	userController controller.UserController, 
+	postController controller.PostController, 
+	commentController controller.CommentController) *httprouter.Router{
 
 	router := httprouter.New()
 
@@ -26,6 +30,14 @@ func NewRouter(authController controller.AuthController, userController controll
 	router.PUT("/api/posts/:postId", postController.Update)
 	router.DELETE("/api/posts/:postId", postController.Delete)
 
+	//Comment Controller
+	router.POST("/api/comments", commentController.Create)
+	router.GET("/api/comments", commentController.FindByPostId)
+	router.GET("/api/comments/:commentId", commentController.FindById)
+	router.PUT("/api/comments/:commentId", commentController.Update)
+	router.DELETE("/api/comments/:commentId", commentController.Delete)
+
+	
 	router.PanicHandler = exception.ErrorHandler
 	
 	return router
