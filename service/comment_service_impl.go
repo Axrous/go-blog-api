@@ -44,7 +44,10 @@ func (service *CommentServiceImpl) FindById(ctx context.Context, commentId int) 
 		Id: comment.Id,
 		Content: comment.Content,
 		PostId: comment.PostId,
-		UserId: comment.UserId,
+		User: web.CommentUserResponse{
+			Id: comment.Id,
+			Name: comment.UserName,
+		},
 	}
 
 	return commentResponse
@@ -67,7 +70,10 @@ func (service *CommentServiceImpl) FindByPostId(ctx context.Context, postId int)
 			Id: comment.Id,
 			Content: comment.Content,
 			PostId: comment.PostId,
-			UserId: comment.UserId,
+			User: web.CommentUserResponse{
+				Id: comment.Id,
+				Name: comment.UserName,
+			},
 		})
 	}
 
@@ -91,7 +97,9 @@ func (service *CommentServiceImpl) Save(ctx context.Context, request web.Comment
 		Id: result.Id,
 		Content: result.Content,
 		PostId: result.PostId,
-		UserId: result.UserId,
+		User: web.CommentUserResponse{
+			Id: comment.Id,
+		},
 	}
 
 	return commentResponse
@@ -116,7 +124,9 @@ func (service *CommentServiceImpl) Update(ctx context.Context, request web.Comme
 		Id: comment.Id,
 		Content: comment.Content,
 		PostId: comment.PostId,
-		UserId: comment.UserId,
+		User: web.CommentUserResponse{
+			Id: comment.Id,
+		},
 	}
 
 	return commentResponse

@@ -21,7 +21,7 @@ func (repository *CommentRepositoryImpl) Delete(ctx context.Context, tx *sql.Tx,
 
 // FindById implements CommentRepository.
 func (repository *CommentRepositoryImpl) FindById(ctx context.Context, tx *sql.Tx, commentId int) (domain.Comment, error) {
-	SQL := "select id, content, post_id, user_id from comments where id = ?"
+	SQL := "select comments.id, comments.content, comments.post_id, comments.user_id, users.name from comments join users on comments.user_id = users.id where comments.id = ?"
 
 	rows, err := tx.QueryContext(ctx, SQL, commentId)
 	helper.PanicIfError(err)
@@ -29,7 +29,7 @@ func (repository *CommentRepositoryImpl) FindById(ctx context.Context, tx *sql.T
 
 	comment := domain.Comment{}
 	if rows.Next() {
-		rows.Scan(&comment.Id, &comment.Content, &comment.PostId, &comment.UserId)
+		rows.Scan(&comment.Id, &comment.Content, &comment.PostId, &comment.UserId, &comment.UserName)
 		return comment, nil
 	} 
 
@@ -39,7 +39,7 @@ func (repository *CommentRepositoryImpl) FindById(ctx context.Context, tx *sql.T
 
 // FindByPostId implements CommentRepository.
 func (repository *CommentRepositoryImpl) FindByPostId(ctx context.Context, tx *sql.Tx, postId int) ([]domain.Comment, error) {
-	SQL := "select id, content, post_id, user_id from comments where post_id = ?"
+	SQL := "select comments.id, comments.content, comments.post_id, comments.user_id, users.name from comments join users on comments.user_id = users.id where comments.post_id = ?"
 
 	rows, err := tx.QueryContext(ctx, SQL, postId)
 	helper.PanicIfError(err)
@@ -49,7 +49,7 @@ func (repository *CommentRepositoryImpl) FindByPostId(ctx context.Context, tx *s
 
 		for rows.Next() {
 			comment := domain.Comment{}
-			rows.Scan(&comment.Id, &comment.Content, &comment.PostId, &comment.UserId)
+			rows.Scan(&comment.Id, &comment.Content, &comment.PostId, &comment.UserId, &comment.UserName)
 			comments = append(comments, comment)
 		}
 
